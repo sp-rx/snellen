@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Snellen Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --cream: #F7F5F0;
+  --white: #FFFFFF;
+  --ink: #1A1916;
+  --ink-mid: #1A1916;
+  --ink-light: #1A1916;
+  --rule: #E2DDD6;
+  --rule-strong: #C8C3BA;
+  --accent: #2A5C8F;
+  --accent-light: #EBF2F9;
+  --accent-mid: #5A8BBF;
+  --danger: #8F2A2A;
+  --danger-light: #F9EBEB;
+  --success: #1A6B40;
+  --success-light: #EBF6F1;
+  --radius: 4px;
+  --radius-lg: 8px;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  min-height: 100vh;
+  padding: 0 0 60px 0;
+}
+
+/* ── Header bar ── */
+.topbar {
+  background: var(--white);
+  border-bottom: 1px solid var(--rule);
+  padding: 0 40px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.brand-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 26px;
+  letter-spacing: -0.3px;
+  color: var(--ink);
+}
+
+.brand-sub {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ink-light);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+/* ── Page wrap ── */
+.page {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 36px 24px 0;
+}
+
+/* ── Patient card ── */
+.patient-card {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  margin-bottom: 24px;
+}
+
+.section-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  margin-bottom: 16px;
+}
+
+.patient-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.field-group label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-mid);
+  letter-spacing: 0.4px;
+}
+
+.field-group input {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--ink);
+  background: var(--cream);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  padding: 9px 12px;
+  transition: border-color 0.15s, background 0.15s;
+  outline: none;
+  width: 100%;
+}
+
+.field-group input:focus {
+  border-color: var(--accent);
+  background: var(--white);
+}
+
+.card-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* ── Buttons ── */
+.btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  border-radius: var(--radius);
+  padding: 9px 18px;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.btn:active { transform: scale(0.98); }
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+.btn-primary:hover { opacity: 0.88; }
+
+.btn-outline {
+  background: transparent;
+  color: var(--ink-mid);
+  border: 1px solid var(--rule-strong);
+}
+.btn-outline:hover { background: var(--cream); }
+
+.btn-ghost-danger {
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid transparent;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+.btn-ghost-danger:hover { background: var(--danger-light); border-color: #dbb0b0; }
+
+/* ── Sessions ── */
+.sessions-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.sessions-count {
+  font-size: 11px;
+  color: var(--ink-light);
+  font-weight: 400;
+}
+
+/* ── Record card ── */
+.record {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  margin-bottom: 16px;
+  overflow: hidden;
+  animation: slideIn 0.2s ease;
+}
+
+@keyframes slideIn {
+  from { opacity:0; transform: translateY(-6px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+
+.record-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--rule);
+  background: #FAFAF8;
+}
+
+.record-meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.record-num {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-light);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.record-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ctrl-input {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  color: var(--ink);
+  background: var(--white);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  padding: 5px 9px;
+  outline: none;
+  height: 30px;
+  transition: border-color 0.15s;
+}
+
+.ctrl-input:focus { border-color: var(--accent); }
+
+/* ── Score rows ── */
+.record-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.score-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ref-line {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 8px;
+  color: var(--ink-light);
+  text-transform: uppercase;
+  padding-left: 2px;
+  user-select: none;
+}
+
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.row-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  width: 40px;
+  flex-shrink: 0;
+}
+
+.letter-input {
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 14px;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--cream);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  outline: none;
+  flex: 1;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.letter-input:focus {
+  border-color: var(--accent);
+  background: var(--white);
+}
+
+.marks-line {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 10.5px;
+  padding-left: 42px;
+  min-height: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.mark-correct { color: var(--success); }
+.mark-wrong   { color: var(--danger); }
+
+/* ── Score summary badge ── */
+.score-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: var(--accent-light);
+  color: var(--accent);
+}
+
+/* ── Divider ── */
+.row-divider {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin: 0;
+}
+
+/* ── Empty state ── */
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--ink-light);
+  font-size: 14px;
+}
+
+.empty-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+  opacity: 0.4;
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <span class="brand-name">Snellen VA Records</span>
+    <span class="brand-sub">~ by Kiara Optometry</span>
+  </div>
+  <button class="btn btn-outline" onclick="saveAndEmail()">
+    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M2 4.5A1.5 1.5 0 013.5 3h9A1.5 1.5 0 0114 4.5v7a1.5 1.5 0 01-1.5 1.5h-9A1.5 1.5 0 012 11.5v-7z" stroke="currentColor" stroke-width="1.2"/>
+      <path d="M2 4.5l6 4.5 6-4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>
+    Save &amp; Send
+  </button>
+</div>
+
+<div class="page">
+
+  <div class="patient-card">
+    <div class="section-label">Patient Information</div>
+    <div class="patient-fields">
+      <div class="field-group">
+        <label>Full Name</label>
+        <input id="name" type="text" placeholder="e.g. Ahmad bin Yusof" autocomplete="off">
+      </div>
+      <div class="field-group">
+        <label>Contact Number</label>
+        <input id="phone" type="tel" placeholder="e.g. 012-345 6789" autocomplete="off">
+      </div>
+    </div>
+    <div class="card-actions">
+      <button class="btn btn-primary" onclick="addRecord()">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+          <path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        New Session
+      </button>
+    </div>
+  </div>
+
+  <div class="sessions-header">
+    <div class="section-label" style="margin-bottom:0">Sessions</div>
+    <span class="sessions-count" id="sessionCount">0 records</span>
+  </div>
+
+  <div id="container"></div>
+
+</div>
+
+<script>
+const pages = {
+  1: {top:"E H R N O K A S D B", mid:"H R N D A K S O B E", bot:"D S E R B N O K A H"},
+  2: {top:"S K O H R B N D E A", mid:"K E B H A N D S O R", bot:"B O K H S E N A D R"},
+  3: {top:"B O H R S E A K N D", mid:"N D A S R K O E B H", bot:"H S K B O N R A E D"}
+};
+
+let records = [];
+
+function empty(){
+  return { page:"1", date:new Date().toISOString().split('T')[0], top:"", mid:"", bot:"" };
+}
+
+function addRecord(){
+  records.unshift(empty());
+  render();
+}
+
+function update(i,key,val){
+  records[i][key] = val;
+}
+
+function clean(str){
+  return (str||"").toUpperCase().replace(/[^A-Z]/g,'');
+}
+
+function marksHTML(input, ref){
+  let a = clean(input);
+  let r = ref.replace(/\s/g,'').split('');
+  return r.map((ch, i) => {
+    if(!a[i]) return '<span style="color:var(--rule-strong)">·</span>';
+    return a[i]===ch
+      ? `<span class="mark-correct">✔</span>`
+      : `<span class="mark-wrong">✖</span>`;
+  }).join('<span style="display:inline-block;width:10.5px"></span>');
+}
+
+function scoreCount(input, ref){
+  let a = clean(input);
+  let r = ref.replace(/\s/g,'').split('');
+  let ok = r.filter((ch,i)=> a[i]===ch).length;
+  return ok + '/' + r.length;
+}
+
+function totalScore(rec){
+  const ref = pages[rec.page];
+  let ok=0, tot=0;
+  ['top','mid','bot'].forEach(k=>{
+    let a = clean(rec[k]);
+    let r = ref[k].replace(/\s/g,'').split('');
+    tot+=r.length;
+    ok+=r.filter((ch,i)=>a[i]===ch).length;
+  });
+  return {ok, tot};
+}
+
+function render(){
+  const c = document.getElementById("container");
+  document.getElementById("sessionCount").textContent =
+    records.length + (records.length===1?' record':' records');
+
+  if(!records.length){
+    c.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">◎</div>
+      No sessions recorded yet. Start by adding a new session above.
+    </div>`;
+    return;
+  }
+
+  c.innerHTML = records.map((r, i) => {
+    const ref = pages[r.page];
+    const {ok, tot} = totalScore(r);
+    const pct = Math.round(ok/tot*100);
+
+    return `
+<div class="record">
+  <div class="record-header">
+    <div class="record-meta">
+      <span class="record-num">Session ${records.length - i}</span>
+      <span class="score-badge">${ok}/${tot} &nbsp;·&nbsp; ${pct}%</span>
+    </div>
+    <div class="record-controls">
+      <input type="date" class="ctrl-input" value="${r.date}"
+        onchange="update(${i},'date',this.value)">
+      <button class="btn btn-ghost-danger" onclick="if(confirm('Are you sure you want to delete this session?')) { records.splice(${i},1); render(); }">Remove</button>
+      <select class="ctrl-input" onchange="update(${i},'page',this.value);render()">
+        <option value="1" ${r.page=="1"?"selected":""}>Page 1</option>
+        <option value="2" ${r.page=="2"?"selected":""}>Page 2</option>
+        <option value="3" ${r.page=="3"?"selected":""}>Page 3</option>
+      </select>
+
+    </div>
+  </div>
+
+  <div class="record-body">
+
+    ${['top','mid','bot'].map((row, ri) => `
+    ${ri>0 ? '<hr class="row-divider">' : ''}
+    <div class="score-row">
+      <div class="ref-line">${ref[row]}</div>
+      <div class="input-row">
+        <span class="row-label">${row.toUpperCase()}</span>
+        <input class="letter-input" maxlength="10" value="${r[row]}"
+          oninput="update(${i},'${row}',this.value);refreshMarks(${i})">
+      </div>
+      <div class="marks-line" id="m_${row}_${i}">${marksHTML(r[row], ref[row])}</div>
+    </div>
+    `).join('')}
+
+  </div>
+</div>
+    `;
+  }).join('');
+}
+
+function refreshMarks(i){
+  const r = records[i];
+  const ref = pages[r.page];
+  ['top','mid','bot'].forEach(row=>{
+    const el = document.getElementById(`m_${row}_${i}`);
+    if(el) el.innerHTML = marksHTML(r[row], ref[row]);
+  });
+
+  // Refresh score badge
+  const {ok, tot} = totalScore(r);
+  const pct = Math.round(ok/tot*100);
+  const badge = document.querySelectorAll('.score-badge')[i];
+  if(badge) badge.innerHTML = `${ok}/${tot} &nbsp;·&nbsp; ${pct}%`;
+}
+
+function saveAndEmail(){
+  const name = document.getElementById("name").value;
+  const phone = document.getElementById("phone").value;
+
+  let summary = records.map((r,i)=>{
+    const ref = pages[r.page];
+    function txt(row){ return clean(r[row]).split('').join(' ') || '—'; }
+    function marks(row){
+      let a=clean(r[row]);
+      let rs=ref[row].replace(/\s/g,'').split('');
+      return rs.map((ch,j)=>a[j]&&a[j]===ch?'✔':'✖').join(' ');
+    }
+    const {ok,tot}=totalScore(r);
+    return `Session ${records.length-i}  |  Date: ${r.date}  |  Page ${r.page}  |  Score: ${ok}/${tot}\n` +
+      `  Top ref : ${ref.top}\n  Top in  : ${txt('top')}\n  Result  : ${marks('top')}\n\n` +
+      `  Mid ref : ${ref.mid}\n  Mid in  : ${txt('mid')}\n  Result  : ${marks('mid')}\n\n` +
+      `  Bot ref : ${ref.bot}\n  Bot in  : ${txt('bot')}\n  Result  : ${marks('bot')}\n` +
+      `${'─'.repeat(52)}`;
+  }).join('\n\n');
+
+  const payload = { name, phone, records };
+  const link = `${location.origin}${location.pathname}?data=${encodeURIComponent(JSON.stringify(payload))}`;
+
+  const body = `Patient: ${name}\nContact: ${phone}\n\n${summary}\n\nOpen full report:\n${link}`;
+  const gmailLink =
+    `https://mail.google.com/mail/?view=cm&fs=1` +
+    `&su=${encodeURIComponent(name + ' | Snellen Report')}` +
+    `&body=${encodeURIComponent(body)}`;
+
+  window.open(gmailLink, "_blank");
+}
+
+window.onload = function(){
+  const p = new URLSearchParams(location.search).get('data');
+  if(p){
+    const obj = JSON.parse(decodeURIComponent(p));
+    document.getElementById("name").value = obj.name || "";
+    document.getElementById("phone").value = obj.phone || "";
+    records = obj.records || [];
+  }
+  render();
+};
+</script>
+
+</body>
+</html>

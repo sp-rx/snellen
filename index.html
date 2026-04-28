@@ -271,21 +271,23 @@ body {
   font-family: 'DM Mono', monospace;
   font-size: 11px;
   font-weight: 500;
-  letter-spacing: 8px;
+  letter-spacing: 14.5px;
   color: var(--ink-light);
   text-transform: uppercase;
   padding-left: 2px;
   user-select: none;
+  margin-left:120px;
 }
 
 .input-row {
   display: flex;
   align-items: center;
   gap: 0;
+  width:80%
 }
 
 .row-label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -296,15 +298,15 @@ body {
 
 .letter-input {
   font-family: 'DM Mono', monospace;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: 14px;
+  letter-spacing: 35px;
   text-transform: uppercase;
   color: var(--ink);
   background: var(--cream);
   border: 1px solid var(--rule-strong);
   border-radius: var(--radius);
-  padding: 8px 12px;
+  padding: 8px 0px 8px 30px;
   outline: none;
   flex: 1;
   transition: border-color 0.15s, background 0.15s;
@@ -317,12 +319,13 @@ body {
 
 .marks-line {
   font-family: 'DM Mono', monospace;
-  font-size: 12px;
-  letter-spacing: 10.5px;
+  font-size: 10px;
+  letter-spacing: 23.5px;
   padding-left: 42px;
   min-height: 20px;
   display: flex;
   align-items: center;
+  margin-left:79px;
 }
 
 .mark-correct { color: var(--success); }
@@ -368,7 +371,7 @@ body {
 
 <div class="topbar">
   <div class="brand">
-    <span class="brand-name">Snellen VA Records</span>
+    <span class="brand-name">Snellen VA Progress</span>
     <span class="brand-sub">~ by Kiara Optometry</span>
   </div>
   <button class="btn btn-outline" onclick="saveAndEmail()">
@@ -387,11 +390,11 @@ body {
     <div class="patient-fields">
       <div class="field-group">
         <label>Full Name</label>
-        <input id="name" type="text" placeholder="e.g. Ahmad bin Yusof" autocomplete="off">
+        <input style="letter-spacing:3px" id="name" type="text" placeholder="e.g. Ahmad bin Yusof" autocomplete="off">
       </div>
       <div class="field-group">
         <label>Contact Number</label>
-        <input id="phone" type="tel" placeholder="e.g. 012-345 6789" autocomplete="off">
+        <input style="letter-spacing:3px" id="phone" type="tel" placeholder="e.g. 60123456789" autocomplete="off">
       </div>
     </div>
     <div class="card-actions">
@@ -418,6 +421,12 @@ const pages = {
   1: {top:"E H R N O K A S D B", mid:"H R N D A K S O B E", bot:"D S E R B N O K A H"},
   2: {top:"S K O H R B N D E A", mid:"K E B H A N D S O R", bot:"B O K H S E N A D R"},
   3: {top:"B O H R S E A K N D", mid:"N D A S R K O E B H", bot:"H S K B O N R A E D"}
+};
+
+const rowLabel = {
+  top: "6/9",
+  mid: "6/6",
+  bot: "6/4.5"
 };
 
 let records = [];
@@ -512,10 +521,11 @@ function render(){
     ${['top','mid','bot'].map((row, ri) => `
     ${ri>0 ? '<hr class="row-divider">' : ''}
     <div class="score-row">
-      <div class="ref-line">${ref[row]}</div>
+
+      <span class="ref-line">${ref[row]}</span>
       <div class="input-row">
-        <span class="row-label">${row.toUpperCase()}</span>
-        <input class="letter-input" maxlength="10" value="${r[row]}"
+	<span style="margin-left:25px" class="row-label">${rowLabel[row]}</span>
+        <input style="margin-left:25px" placeholder="oooooooooo" class="letter-input" maxlength="10" value="${r[row]}"
           oninput="update(${i},'${row}',this.value);refreshMarks(${i})">
       </div>
       <div class="marks-line" id="m_${row}_${i}">${marksHTML(r[row], ref[row])}</div>
@@ -564,12 +574,12 @@ function saveAndEmail(){
   }).join('\n\n');
 
   const payload = { name, phone, records };
-  const link = `${location.origin}${location.pathname}?data=${encodeURIComponent(JSON.stringify(payload))}`;
+  const link = `https://sp-rx.github.io/snellen/?data=${encodeURIComponent(JSON.stringify(payload))}`;
 
   const body = `Patient: ${name}\nContact: ${phone}\n\n${summary}\n\nOpen full report:\n${link}`;
   const gmailLink =
     `https://mail.google.com/mail/?view=cm&fs=1` +
-    `&su=${encodeURIComponent(name + ' | Snellen Report')}` +
+    `&su=${encodeURIComponent(name + ' ' + phone)}` +
     `&body=${encodeURIComponent(body)}`;
 
   window.open(gmailLink, "_blank");
